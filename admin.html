@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>پنل مدیریت</title>
+<style>
+body{font-family:tahoma;background:#f4f6f9;direction:rtl;padding:20px}
+.box{background:white;padding:20px;border-radius:10px;max-width:900px;margin:auto}
+input,textarea,button{width:100%;padding:10px;margin:5px 0}
+button{background:#007bff;color:white;border:none;border-radius:5px;font-size:15px}
+.q{background:#eef;padding:10px;margin:5px;border-radius:6px}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>پنل مدیریت حرفه‌ای</h2>
+
+<h3>➕ افزودن سوال</h3>
+<input id="q" placeholder="متن سوال">
+<input id="a1" placeholder="گزینه 1">
+<input id="a2" placeholder="گزینه 2">
+<input id="a3" placeholder="گزینه 3">
+<input id="correct" placeholder="شماره گزینه صحیح (1-3)">
+<button onclick="addQ()">ثبت سوال</button>
+
+<h3>📋 لیست سوالات</h3>
+<div id="list"></div>
+
+</div>
+
+<script>
+let questions = JSON.parse(localStorage.getItem("questions") || "[]");
+
+function show(){
+    let html="";
+    questions.forEach((q,i)=>{
+        html+=<div class="q">
+        ${i+1}) ${q.q}<br>
+        1)${q.a1} | 2)${q.a2} | 3)${q.a3}<br>
+        ✅ جواب: ${q.correct}
+        <br><button onclick="del(${i})">حذف</button>
+        </div>;
+    });
+    document.getElementById("list").innerHTML=html;
+}
+show();
+
+function addQ(){
+    questions.push({
+        q:q.value,
+        a1:a1.value,
+        a2:a2.value,
+        a3:a3.value,
+        correct:correct.value
+    });
+    localStorage.setItem("questions",JSON.stringify(questions));
+    show();
+}
+
+function del(i){
+    questions.splice(i,1);
+    localStorage.setItem("questions",JSON.stringify(questions));
+    show();
+}
+</script>
+
+</body>
+</html>
