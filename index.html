@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سامانه آزمون آنلاین مدرسه</title>
+<style>
+body{font-family:tahoma;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);margin:0;color:#fff}
+.container{max-width:1000px;margin:20px auto;background:#ffffff10;padding:20px;border-radius:20px}
+h1{text-align:center}
+input,button{padding:10px;border:none;border-radius:10px;font-size:16px;margin:5px}
+button{background:#00ffcc;cursor:pointer}
+button:hover{background:#00ccaa}
+.hidden{display:none}
+.question{margin:10px 0;padding:10px;background:#00000040;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎓 سامانه آزمون آنلاین مدرسه</h1><div id="login">
+<h3>ورود به سیستم</h3>
+<input id="user" placeholder="نام کاربری">
+<input id="pass" type="password" placeholder="رمز عبور">
+<br>
+<button onclick="login()">ورود</button>
+</div><div id="admin" class="hidden">
+<h3>👑 پنل مدیریت</h3>
+<p>خوش آمدی مدیر سیستم</p>
+<button onclick="startExam()">فعال‌سازی آزمون</button>
+<button onclick="logout()">خروج</button>
+</div><div id="student" class="hidden">
+<h3>🎓 آزمون دانش‌آموز</h3>
+<div id="timer"></div>
+<div id="quiz"></div>
+<button onclick="submitQuiz()">ثبت آزمون</button>
+<div id="result"></div>
+</div>
+</div><script>
+const ADMIN_USER = "sinakarami";
+const ADMIN_PASS = "sina2008";
+
+let examActive=false;
+
+function login(){
+let u=user.value;
+let p=pass.value;
+if(u===ADMIN_USER && p===ADMIN_PASS){
+loginDiv(false);
+admin.classList.remove('hidden');
+}else{
+loginDiv(false);
+student.classList.remove('hidden');
+if(!examActive){alert('آزمون هنوز فعال نشده');}
+}
+}
+
+function loginDiv(show){login.style.display=show?'block':'none';}
+
+function logout(){location.reload();}
+
+// سوالات نمونه
+const questions=[];
+for(let i=1;i<=120;i++){
+questions.push({
+q:سوال شماره ${i} ؟,
+options:["گزینه 1","گزینه 2","گزینه 3","گزینه 4"],
+answer:0
+});
+}
+
+function startExam(){
+examActive=true;
+alert('آزمون فعال شد');
+}
+
+function loadQuiz(){
+quiz.innerHTML='';
+questions.forEach((item,idx)=>{
+const div=document.createElement('div');
+div.className='question';
+div.innerHTML=<b>${idx+1}. ${item.q}</b>${item.options.map((op,i)=><label><input type=radio name=q${idx} value=${i}> ${op}</label>).join('')};
+quiz.appendChild(div);
+});
+}
+
+let total=130*60;
+function startTimer(){
+const t=setInterval(()=>{
+let m=Math.floor(total/60);
+let s=total%60;
+timer.innerHTML=زمان باقی مانده: ${m}:${s.toString().padStart(2,'0')};
+if(total<=0){clearInterval(t);submitQuiz();}
+total--;
+},1000);
+}
+
+function submitQuiz(){
+let score=0;
+questions.forEach((q,i)=>{
+const ans=document.querySelector(input[name=q${i}]:checked);
+if(ans && +ans.value===q.answer) score++;
+});
+result.innerHTML=نمره شما: ${score} از ${questions.length};
+}
+
+// نمایش آزمون برای دانش آموز
+if(examActive){loadQuiz();startTimer();}
+</script></body>
+</html>
