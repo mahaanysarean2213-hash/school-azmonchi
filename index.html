@@ -7,54 +7,90 @@
 body{font-family:tahoma;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);margin:0;color:#fff}
 .container{max-width:1000px;margin:20px auto;background:#ffffff10;padding:20px;border-radius:20px}
 h1{text-align:center}
+.menu{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:15px}
+.menu button{background:#ffd700;border:none;border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer}
+.menu button:hover{background:#ffb700}
 input,button{padding:10px;border:none;border-radius:10px;font-size:16px;margin:5px}
-button{background:#00ffcc;cursor:pointer}
-button:hover{background:#00ccaa}
+.mainbtn{background:#00ffcc;cursor:pointer}
+.mainbtn:hover{background:#00ccaa}
 .hidden{display:none}
 .question{margin:10px 0;padding:10px;background:#00000040;border-radius:10px}
+.timer{text-align:center;font-size:20px;margin:10px 0}
+.result{text-align:center;font-size:22px;margin-top:15px}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>🎓 سامانه آزمون آنلاین مدرسه</h1><div id="login">
-<h3>ورود به سیستم</h3>
-<input id="user" placeholder="نام کاربری">
-<input id="pass" type="password" placeholder="رمز عبور">
-<br>
-<button onclick="login()">ورود</button>
+<h1>🎓 سامانه آزمون آنلاین مدرسه</h1><div class="menu">
+  <button onclick="showDay('sat')">شنبه</button>
+  <button onclick="showDay('sun')">یکشنبه</button>
+  <button onclick="showDay('mon')">دوشنبه</button>
+  <button onclick="showDay('tue')">سه‌شنبه</button>
+  <button onclick="showDay('wed')">چهارشنبه</button>
+  <button onclick="showDay('thu')">پنجشنبه</button>
+  <button onclick="showFriday()">جمعه (آزمون)</button>
+</div><div id="dayContent" style="text-align:center;margin:15px;font-size:18px"></div><div id="login" class="hidden">
+  <h3>ورود به سیستم</h3>
+  <input id="user" placeholder="نام کاربری">
+  <input id="pass" type="password" placeholder="رمز عبور">
+  <br>
+  <button class="mainbtn" onclick="login()">ورود</button>
 </div><div id="admin" class="hidden">
-<h3>👑 پنل مدیریت</h3>
-<p>خوش آمدی مدیر سیستم</p>
-<button onclick="startExam()">فعال‌سازی آزمون</button>
-<button onclick="logout()">خروج</button>
+  <h3>👑 پنل مدیریت</h3>
+  <p>خوش آمدی مدیر سیستم</p>
+  <button class="mainbtn" onclick="startExam()">فعال‌سازی آزمون</button>
+  <button class="mainbtn" onclick="logout()">خروج</button>
 </div><div id="student" class="hidden">
-<h3>🎓 آزمون دانش‌آموز</h3>
-<div id="timer"></div>
-<div id="quiz"></div>
-<button onclick="submitQuiz()">ثبت آزمون</button>
-<div id="result"></div>
-</div>
-</div><script>
+  <h3>🎓 آزمون دانش‌آموز</h3>
+  <div class="timer" id="timer"></div>
+  <div id="quiz"></div>
+  <button class="mainbtn" onclick="submitQuiz()">ثبت آزمون</button>
+  <div class="result" id="result"></div>
+</div></div><script>
 const ADMIN_USER = "sinakarami";
 const ADMIN_PASS = "sina2008";
 
-let examActive = true; // برای تست، آزمون همیشه فعاله
+let examActive = true; // برای تست همیشه فعاله
+
+function hideAll(){
+  login.classList.add('hidden');
+  admin.classList.add('hidden');
+  student.classList.add('hidden');
+}
+
+function showDay(day){
+  hideAll();
+  const text = {
+    sat: '📘 برنامه درسی شنبه',
+    sun: '📗 برنامه درسی یکشنبه',
+    mon: '📕 برنامه درسی دوشنبه',
+    tue: '📙 برنامه درسی سه‌شنبه',
+    wed: '📓 برنامه درسی چهارشنبه',
+    thu: '📔 مرور و آمادگی آزمون',
+  };
+  dayContent.innerHTML = text[day] || '';
+}
+
+function showFriday(){
+  hideAll();
+  dayContent.innerHTML = '📝 برای شرکت در آزمون وارد شوید';
+  login.classList.remove('hidden');
+}
 
 function login(){
-  let u = document.getElementById('user').value;
-  let p = document.getElementById('pass').value;
+  let u = user.value.trim();
+  let p = pass.value.trim();
 
-  document.getElementById('login').style.display = 'none';
+  hideAll();
 
   if(u === ADMIN_USER && p === ADMIN_PASS){
-    document.getElementById('admin').classList.remove('hidden');
+    admin.classList.remove('hidden');
   } else {
     if(!examActive){
       alert('آزمون هنوز فعال نشده');
-      location.reload();
       return;
     }
-    document.getElementById('student').classList.remove('hidden');
+    student.classList.remove('hidden');
     loadQuiz();
     startTimer();
   }
@@ -82,13 +118,16 @@ function loadQuiz(){
   questions.forEach((item,idx)=>{
     const div=document.createElement('div');
     div.className='question';
-    div.innerHTML=<b>${idx+1}. ${item.q}</b>${item.options.map((op,i)=><label><input type=radio name=q${idx} value=${i}> ${op}</label>).join('')};
+    div.innerHTML=<b>${idx+1}. ${item.q}</b> + item.options.map((op,i)=>
+      <label><input type=radio name=q${idx} value=${i}> ${op}</label>
+    ).join('');
     quiz.appendChild(div);
   });
 }
 
 let total=130*60;
 function startTimer(){
+  total = 130*60;
   const t=setInterval(()=>{
     let m=Math.floor(total/60);
     let s=total%60;
@@ -107,4 +146,4 @@ function submitQuiz(){
   result.innerHTML=نمره شما: ${score} از ${questions.length};
 }
 </script></body>
-</html>
+</html>  
