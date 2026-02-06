@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>آزمون آنلاین مدرسه</title>
+<style>
+body{font-family:tahoma;background:#f4f6f9;direction:rtl;padding:20px}
+.box{background:white;padding:20px;border-radius:10px;max-width:800px;margin:auto}
+h2{text-align:center}
+.question{margin:15px 0}
+.timer{font-size:18px;color:red;text-align:center;margin:10px}
+button{padding:10px 20px;border:none;background:#28a745;color:white;font-size:16px;border-radius:6px;cursor:pointer}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>آزمون آنلاین هفتگی مدرسه</h2>
+<div class="timer" id="timer">130:00</div>
+
+<form id="quiz">
+
+<div class="question">
+1) حاصل 2 + 2 ؟<br>
+<input type="radio" name="q1" value="0">3
+<input type="radio" name="q1" value="1">4
+<input type="radio" name="q1" value="0">5
+</div>
+
+<div class="question">
+2) پایتخت ایران؟<br>
+<input type="radio" name="q2" value="1">تهران
+<input type="radio" name="q2" value="0">اصفهان
+<input type="radio" name="q2" value="0">تبریز
+</div>
+
+<div class="question">
+3) حاصل 5 × 6 ؟<br>
+<input type="radio" name="q3" value="0">25
+<input type="radio" name="q3" value="1">30
+<input type="radio" name="q3" value="0">20
+</div>
+
+<button type="button" onclick="finish()">ثبت آزمون</button>
+
+</form>
+
+<h2 id="result"></h2>
+</div>
+
+<script>
+let time = 130 * 60;
+
+setInterval(() => {
+    let min = Math.floor(time/60);
+    let sec = time % 60;
+    document.getElementById("timer").innerHTML = min + ":" + (sec<10?"0":"") + sec;
+    time--;
+    if(time < 0) finish();
+},1000);
+
+function finish(){
+    let score = 0;
+    let answers = document.querySelectorAll('input:checked');
+    answers.forEach(a => score += Number(a.value));
+    document.getElementById("result").innerHTML = "نمره شما: " + score;
+}
+</script>
+
+</body>
+</html>
