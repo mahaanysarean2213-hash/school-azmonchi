@@ -38,71 +38,73 @@ button:hover{background:#00ccaa}
 const ADMIN_USER = "sinakarami";
 const ADMIN_PASS = "sina2008";
 
-let examActive=false;
+let examActive = true; // برای تست، آزمون همیشه فعاله
 
 function login(){
-let u=user.value;
-let p=pass.value;
-if(u===ADMIN_USER && p===ADMIN_PASS){
-loginDiv(false);
-admin.classList.remove('hidden');
-}else{
-loginDiv(false);
-student.classList.remove('hidden');
-if(!examActive){alert('آزمون هنوز فعال نشده');}
-}
-}
+  let u = document.getElementById('user').value;
+  let p = document.getElementById('pass').value;
 
-function loginDiv(show){login.style.display=show?'block':'none';}
+  document.getElementById('login').style.display = 'none';
+
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    document.getElementById('admin').classList.remove('hidden');
+  } else {
+    if(!examActive){
+      alert('آزمون هنوز فعال نشده');
+      location.reload();
+      return;
+    }
+    document.getElementById('student').classList.remove('hidden');
+    loadQuiz();
+    startTimer();
+  }
+}
 
 function logout(){location.reload();}
 
 // سوالات نمونه
 const questions=[];
 for(let i=1;i<=120;i++){
-questions.push({
-q:سوال شماره ${i} ؟,
-options:["گزینه 1","گزینه 2","گزینه 3","گزینه 4"],
-answer:0
-});
+  questions.push({
+    q:سوال شماره ${i} ؟,
+    options:["گزینه 1","گزینه 2","گزینه 3","گزینه 4"],
+    answer:0
+  });
 }
 
 function startExam(){
-examActive=true;
-alert('آزمون فعال شد');
+  examActive = true;
+  alert('آزمون فعال شد');
 }
 
 function loadQuiz(){
-quiz.innerHTML='';
-questions.forEach((item,idx)=>{
-const div=document.createElement('div');
-div.className='question';
-div.innerHTML=<b>${idx+1}. ${item.q}</b>${item.options.map((op,i)=><label><input type=radio name=q${idx} value=${i}> ${op}</label>).join('')};
-quiz.appendChild(div);
-});
+  quiz.innerHTML='';
+  questions.forEach((item,idx)=>{
+    const div=document.createElement('div');
+    div.className='question';
+    div.innerHTML=<b>${idx+1}. ${item.q}</b>${item.options.map((op,i)=><label><input type=radio name=q${idx} value=${i}> ${op}</label>).join('')};
+    quiz.appendChild(div);
+  });
 }
 
 let total=130*60;
 function startTimer(){
-const t=setInterval(()=>{
-let m=Math.floor(total/60);
-let s=total%60;
-timer.innerHTML=زمان باقی مانده: ${m}:${s.toString().padStart(2,'0')};
-if(total<=0){clearInterval(t);submitQuiz();}
-total--;
-},1000);
+  const t=setInterval(()=>{
+    let m=Math.floor(total/60);
+    let s=total%60;
+    timer.innerHTML=زمان باقی مانده: ${m}:${s.toString().padStart(2,'0')};
+    if(total<=0){clearInterval(t);submitQuiz();}
+    total--;
+  },1000);
 }
 
 function submitQuiz(){
-let score=0;
-questions.forEach((q,i)=>{
-const ans=document.querySelector(input[name=q${i}]:checked);
-if(ans && +ans.value===q.answer) score++;
-});
-result.innerHTML=نمره شما: ${score} از ${questions.length};
+  let score=0;
+  questions.forEach((q,i)=>{
+    const ans=document.querySelector(input[name=q${i}]:checked);
+    if(ans && +ans.value===q.answer) score++;
+  });
+  result.innerHTML=نمره شما: ${score} از ${questions.length};
 }
-
-// نمایش آزمون برای دانش آموز
-if(examActive){loadQuiz();startTimer();}
 </script></body>
 </html>
