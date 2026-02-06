@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>ورود مدیر</title>
+<style>
+body{background:#121212;font-family:tahoma;color:white;display:flex;justify-content:center;align-items:center;height:100vh}
+.box{background:#1e1e1e;padding:30px;border-radius:10px;width:300px;text-align:center}
+input,button{width:100%;padding:10px;margin:8px 0;border:none;border-radius:5px}
+button{background:#00c853;color:black;font-size:16px}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>ورود مدیر</h2>
+<input id="user" placeholder="نام کاربری">
+<input id="pass" type="password" placeholder="رمز عبور">
+<button onclick="login()">ورود</button>
+<p id="msg"></p>
+</div>
+
+<script>
+function login(){
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if(u=="sinakarami" && p=="sina2008"){
+        location.href="admin.html";
+    }else{
+        document.getElementById("msg").innerHTML="❌ اطلاعات ورود اشتباه است";
+    }
+}
+</script>
+
+</body>
+</html>
